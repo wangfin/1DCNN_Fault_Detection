@@ -20,9 +20,8 @@ class Config(object):
     list_filename = 'annotations_mini.txt'  # mat文件的文件列表
     h5filename = 'DE_mini.h5'
 
-
     train_data_root = 'data/DE_mini.h5'
-    val_data_root = 'data/DE_mini.h5'
+    test_data_root = 'data/DE_mini.h5'
 
     dim = 400  # 数据的维度
     train_fraction = 0.8  # 训练集所占的占比
@@ -34,8 +33,8 @@ class Config(object):
     print_every = 100
 
     debug_file = '/tmp/debug'  # if os.path.exists(debug_file): enter ipdb
-    result_file = 'result.csv'
-    load_model_path = None
+    result_file = './results/confuse_matrix_rate.xlsx'
+    load_model_path = './checkpoints/CWRUcnn_0710_15_31_48.pth'
 
     max_epoch = 50
     lr = 0.001  # initial learning rate

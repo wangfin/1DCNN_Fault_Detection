@@ -26,6 +26,8 @@ class CWRUcnn(BasicModule):
 
     def __init__(self, kernel1=27, kernel2=36, kernel_size=10, pad=0, ms1=4, ms2=4):
         super(CWRUcnn, self).__init__()
+        self.model_name = 'CWRUcnn'
+
         self.conv = nn.Sequential(
             nn.Conv1d(1, kernel1, kernel_size, padding=pad),
             nn.BatchNorm1d(kernel1),
@@ -54,7 +56,6 @@ class CWRUcnn(BasicModule):
             nn.ReLU(),
             nn.Linear(16, 4),
         )
-
 
     def forward(self, x):
         x = self.conv(x)

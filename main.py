@@ -87,13 +87,6 @@ def train():
             data, label = data.float(), label.long()
             input, target = data.to(device), label.to(device)
 
-            # input = Variable(data)
-            # target = Variable(label)
-            #
-            # if opt.use_gpu:
-            #     input = input.cuda()
-            #     target = target.cuda()
-
             optimizer.zero_grad()
             score = model(input)
             # 求loss
@@ -128,22 +121,48 @@ def train():
     val_acc, confuse_matrix = check_accuracy(model, val_dataloader, device, error_analysis=True)
     # 将混淆矩阵写入Excel
     data_pd = pd.DataFrame(confuse_matrix)
-    writer = pd.ExcelWriter('results\\confuse_matrix_rate.xlsx')
+    writer = pd.ExcelWriter(opt.result_file)
     data_pd.to_excel(writer)
     writer.save()
     writer.close()
 
     # 保存模型
-    model_save_path = model.save()
+    model_save_path = model.save(opt.model)
     print('最优模型保存在：', model_save_path)
+
+
+def test():
+
+    # 模型文件
+    model = getattr(models, opt.model)().eval()
+    if opt.load_model_path:
+        model.load(opt.load_model_path)
+
+    # 加载数据集
+    test_dataset = CWRUDataset(opt.test_data_root, train=False)
+    test_loader = DataLoader(test_dataset, opt.batch_size, shuffle=False)
+    print('testing length = %d' % len(test_dataset))
+
+    device = ''
+    if opt.use_gpu:
+        use_cuda = torch.cuda.is_available()
+        if use_cuda:
+            print('CUDA is available')
+            device = torch.device(opt.device)
+        else:
+            device = torch.device('cpu')
+
+    model = model.to(device)
+
+    test_acc, confuse_matrix = check_accuracy(model, test_loader, device, error_analysis=True)
 
 
 def check_accuracy(model, loader, device, error_analysis=False):
     '''
     检查模型的准确率，如果错误分析返回混淆矩阵
-    :param model:
-    :param loader:
-    :param device:
+    :param model:模型文件
+    :param loader:数据加载
+    :param device:设备
     :param error_analysis:
     :return:
     '''
@@ -159,7 +178,6 @@ def check_accuracy(model, loader, device, error_analysis=False):
         for x, y in loader:
             # print('x_size', x.size())
             x.resize_(x.size()[0], 1, x.size()[1])
-            # x.resize_(x.size()[0], x.size()[1], 1)
             x, y = x.float(), y.long()
             x, y = x.to(device), y.to(device)
             # predictions
@@ -180,5 +198,6 @@ def check_accuracy(model, loader, device, error_analysis=False):
 
 
 if __name__=='__main__':
-    train()
+    # train()
+    test()
 

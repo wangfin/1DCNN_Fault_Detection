@@ -16,8 +16,9 @@ class BasicModule(torch.nn.Module):
     '''
 
     def __init__(self):
-        super(BasicModule,self).__init__()
-        self.model_name = str(type(self))  # 默认名字
+        super(BasicModule, self).__init__()
+        self.model_name = str(self)  # 默认名字
+        # print(self.model_name)
 
     def load(self, path):
         '''
@@ -31,7 +32,10 @@ class BasicModule(torch.nn.Module):
         '''
         if name is None:
             prefix = 'checkpoints/' + self.model_name + '_'
-            name = time.strftime(prefix + '%m%d_%H:%M:%S.pth')
+            name = time.strftime(prefix + '%m%d_%H_%M_%S.pth')
+        else:
+            prefix = 'checkpoints/' + name + '_'
+            name = time.strftime(prefix + '%m%d_%H_%M_%S.pth')
         torch.save(self.state_dict(), name)
         return name
 
