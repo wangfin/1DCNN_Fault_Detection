@@ -20,11 +20,14 @@ class Config(object):
     list_filename = 'annotations_mini.txt'  # mat文件的文件列表
     h5filename = 'DE_mini.h5'
 
-    train_data_root = 'data/DE_mini.h5'
-    test_data_root = 'data/DE_mini.h5'
+    train_data_root = 'data/DE_split.h5'
+    val_data_root = 'data/DE_split.h5'
+    test_data_root = 'data/DE_split.h5'
 
     dim = 400  # 数据的维度
     train_fraction = 0.8  # 训练集所占的占比
+    split_num = 2
+    category = 4
 
     batch_size = 32  # batch size
     use_gpu = True  # user GPU or not
@@ -36,7 +39,7 @@ class Config(object):
     result_file = './results/confuse_matrix_rate.xlsx'
     load_model_path = './checkpoints/CWRUcnn_0710_15_31_48.pth'
 
-    max_epoch = 50
+    max_epoch = 20
     lr = 0.001  # initial learning rate
     lr_decay = 0.99  # when val_loss increase, lr = lr*lr_decay
     lr_decay_iters = 1  # 每一轮都减少lr

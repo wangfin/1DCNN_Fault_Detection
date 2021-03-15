@@ -30,15 +30,19 @@ class Visualizer(object):
         for key, value in raw_data.items():
             if key[5:7] == 'DE':
                 signal = value
-        print(type(signal))
+        # print(type(signal))
 
         time = [i for i in range(length)]
+
+        font = {'family': 'Times New Roman', 'size': 18}
 
         plt.figure(figsize=(10, 5))  # 设置画布的尺寸
         plt.plot(time, signal[:length], color='mediumblue')
         plt.xlabel("")
-        plt.ylabel("value")
-        plt.title("Normal")
+        plt.ylabel("", font)
+        plt.yticks(fontproperties='Times New Roman', size=18)
+        plt.xticks(fontproperties='Times New Roman', size=18)
+        # plt.title("Normal")
         plt.savefig('../data/Normal.png', dpi=300)
         plt.show()
 

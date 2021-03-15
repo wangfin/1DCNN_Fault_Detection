@@ -32,8 +32,8 @@ def train():
 
     # step1: 模型
     model = getattr(models, opt.model)()
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
+    # if opt.load_model_path:
+    #     model.load(opt.load_model_path)
     if opt.use_gpu: model.cuda()
     # summary(model, (1, 2048))
 
@@ -173,6 +173,7 @@ def check_accuracy(model, loader, device, error_analysis=False):
     # correct counts
     num_correct = 0
     model.eval()  # Put the model in test mode (the opposite of model.train(), essentially)
+    times = []
     with torch.no_grad():
         # one batch
         for x, y in loader:
@@ -180,15 +181,25 @@ def check_accuracy(model, loader, device, error_analysis=False):
             x.resize_(x.size()[0], 1, x.size()[1])
             x, y = x.float(), y.long()
             x, y = x.to(device), y.to(device)
+
+            # 记录测试时间
+            start_time = time.time()
             # predictions
             scores = model(x)
             preds = scores.max(1, keepdim=True)[1]
+            end_time = time.time()
+            times.append(end_time - start_time)
             # accumulate the corrects
             num_correct += preds.eq(y.view_as(preds)).sum().item()
             # confuse matrix: labels and preds
             if error_analysis:
                 ys = np.append(ys, np.array(y.cpu()))
                 y_preds = np.append(y_preds, np.array(preds.cpu()))
+
+    sum_time = 0
+    for i in times:
+        sum_time = sum_time + i
+    # print('测试时间', sum_time)
     acc = float(num_correct) / len(loader.dataset)
     # confuse matrix
     if error_analysis:
@@ -198,6 +209,6 @@ def check_accuracy(model, loader, device, error_analysis=False):
 
 
 if __name__=='__main__':
-    # train()
-    test()
+    train()
+    # test()
 
