@@ -20,9 +20,9 @@ class Config(object):
     list_filename = 'annotations_mini.txt'  # mat文件的文件列表
     h5filename = 'DE_mini.h5'
 
-    train_data_root = 'data/DE_split.h5'
-    val_data_root = 'data/DE_split.h5'
-    test_data_root = 'data/DE_split.h5'
+    train_data_root = 'data/DE_mini.h5'
+    val_data_root = 'data/DE_mini.h5'
+    test_data_root = 'data/DE_mini.h5'
 
     dim = 400  # 数据的维度
     train_fraction = 0.8  # 训练集所占的占比

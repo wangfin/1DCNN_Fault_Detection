@@ -88,73 +88,73 @@ class DataProcess():
 
         return signals_tr_np, labels_tr_np, signals_te_np, labels_te_np
 
-    def create_dataset(self, dim, train_fraction, split_num):
-        '''
-        将每个文件的数据按照每400个点切分，将其中每40个点拆出来（10段）
-        然后每一段的第一个40，第二个40...全部保存起来
-        最后应该是10个文件，每个文件里是40*1218
-        :return:
-        '''
-
-        # 设置空数组
-        signals_tr, signals_te, labels_tr, labels_te = [], [], [], []
-
-        # 读取原始的数据集
-        for idx in range(len(self.frame)):
-            mat_name = os.path.join(self.root, self.frame['file_name'][idx])
-            raw_data = scio.loadmat(mat_name)
-
-            # print(raw_data)
-
-            # 将原始数据集进行拆分
-            for key, value in raw_data.items():
-                if key[5:7] == 'DE':
-                    signal = value
-                    # print(signal.shape)
-                    # 40个数据点一个划分，计算有多少个数据块
-                    sample_num = signal.shape[0] // dim
-
-                    # 分成十段
-                    for x in range(split_num):
-                        split_data = []
-                        # 拆分数据集
-                        for i in range(sample_num):
-                            if i % split_num == x:
-                                # print(i, x)
-                                split_data.append(signal[i*dim:(i+1)*dim])
-                        # print(len(split_data))
-                        # print('sp', split_data)
-
-                        # 把list转换为numpy数组
-                        split_data = np.array(split_data)
-                        # print(split_data)
-                        # print(split_data.shape)
-
-                        # 划分训练集和测试集（根据数据块）
-                        train_num = int(len(split_data) * train_fraction)
-                        test_num = len(split_data) - train_num
-
-                        # 数据样本和标签
-                        signals_tr.append(split_data[0:train_num, :])
-                        signals_te.append(split_data[train_num:train_num+test_num, :])
-
-                        # 数据label
-                        labels_tr.append((idx*split_num+x) * np.ones(int(train_num)))
-                        labels_te.append((idx*split_num+x) * np.ones(int(test_num)))
-
-                        print(labels_te)
-
-        # 最后将数据拼接在一起
-        signals_tr_np = np.concatenate(signals_tr).squeeze()  # 纵向的拼接，删除维度为1的维度
-        labels_tr_np = np.concatenate(np.array(labels_tr)).astype('uint8')
-        signals_te_np = np.concatenate(signals_te).squeeze()
-        labels_te_np = np.concatenate(np.array(labels_te)).astype('uint8')
-
-        # print(labels_te_np)
-
-        print(signals_tr_np.shape, labels_tr_np.shape, signals_te_np.shape, labels_te_np.shape)
-
-        return signals_tr_np, labels_tr_np, signals_te_np, labels_te_np
+    # def create_dataset(self, dim, train_fraction, split_num):
+    #     '''
+    #     将每个文件的数据按照每400个点切分，将其中每40个点拆出来（10段）
+    #     然后每一段的第一个40，第二个40...全部保存起来
+    #     最后应该是10个文件，每个文件里是40*1218
+    #     :return:
+    #     '''
+    #
+    #     # 设置空数组
+    #     signals_tr, signals_te, labels_tr, labels_te = [], [], [], []
+    #
+    #     # 读取原始的数据集
+    #     for idx in range(len(self.frame)):
+    #         mat_name = os.path.join(self.root, self.frame['file_name'][idx])
+    #         raw_data = scio.loadmat(mat_name)
+    #
+    #         # print(raw_data)
+    #
+    #         # 将原始数据集进行拆分
+    #         for key, value in raw_data.items():
+    #             if key[5:7] == 'DE':
+    #                 signal = value
+    #                 # print(signal.shape)
+    #                 # 40个数据点一个划分，计算有多少个数据块
+    #                 sample_num = signal.shape[0] // dim
+    #
+    #                 # 分成十段
+    #                 for x in range(split_num):
+    #                     split_data = []
+    #                     # 拆分数据集
+    #                     for i in range(sample_num):
+    #                         if i % split_num == x:
+    #                             # print(i, x)
+    #                             split_data.append(signal[i*dim:(i+1)*dim])
+    #                     # print(len(split_data))
+    #                     # print('sp', split_data)
+    #
+    #                     # 把list转换为numpy数组
+    #                     split_data = np.array(split_data)
+    #                     # print(split_data)
+    #                     # print(split_data.shape)
+    #
+    #                     # 划分训练集和测试集（根据数据块）
+    #                     train_num = int(len(split_data) * train_fraction)
+    #                     test_num = len(split_data) - train_num
+    #
+    #                     # 数据样本和标签
+    #                     signals_tr.append(split_data[0:train_num, :])
+    #                     signals_te.append(split_data[train_num:train_num+test_num, :])
+    #
+    #                     # 数据label
+    #                     labels_tr.append((idx*split_num+x) * np.ones(int(train_num)))
+    #                     labels_te.append((idx*split_num+x) * np.ones(int(test_num)))
+    #
+    #                     print(labels_te)
+    #
+    #     # 最后将数据拼接在一起
+    #     signals_tr_np = np.concatenate(signals_tr).squeeze()  # 纵向的拼接，删除维度为1的维度
+    #     labels_tr_np = np.concatenate(np.array(labels_tr)).astype('uint8')
+    #     signals_te_np = np.concatenate(signals_te).squeeze()
+    #     labels_te_np = np.concatenate(np.array(labels_te)).astype('uint8')
+    #
+    #     # print(labels_te_np)
+    #
+    #     print(signals_tr_np.shape, labels_tr_np.shape, signals_te_np.shape, labels_te_np.shape)
+    #
+    #     return signals_tr_np, labels_tr_np, signals_te_np, labels_te_np
 
     def save(self, filename, X_train, y_train, X_test, y_test):
         '''
@@ -176,7 +176,7 @@ class DataProcess():
 if __name__ == '__main__':
     Dp = DataProcess(opt.mat_root, opt.list_filename)
     X_train, y_train, X_test, y_test = Dp.process(opt.dim, opt.train_fraction)
-    # Dp.save(opt.h5filename, X_train, y_train, X_test, y_test)
+    Dp.save(opt.h5filename, X_train, y_train, X_test, y_test)
     print('h5文件保存成功')
 
     # X_train, y_train, X_test, y_test = Dp.create_dataset(opt.dim, opt.train_fraction, opt.split_num)
