@@ -7,6 +7,7 @@
 主程序
 包括训练，测试等功能
 '''
+import h5py
 
 from config import opt
 from torch.utils.data import DataLoader
@@ -153,11 +154,17 @@ def test():
             device = torch.device('cpu')
 
     model = model.to(device)
+    # 保存标签
+    f = h5py.File(opt.feature_filename, 'w')
+    print('y_shape', test_dataset.y.shape)
+    f.create_dataset('y_train', data=test_dataset.y)
 
-    test_acc, confuse_matrix = check_accuracy(model, test_loader, device, error_analysis=True)
+    # 测试，并保存中间特征
+    test_acc, confuse_matrix = check_accuracy(model, test_loader, device, feature_file=f, error_analysis=True)
 
+    f.close()
 
-def check_accuracy(model, loader, device, error_analysis=False):
+def check_accuracy(model, loader, device, feature_file, error_analysis=False):
     '''
     检查模型的准确率，如果错误分析返回混淆矩阵
     :param model:模型文件
@@ -166,6 +173,7 @@ def check_accuracy(model, loader, device, error_analysis=False):
     :param error_analysis:
     :return:
     '''
+    X_feature = np.empty([0, 36])
     # save the errors samples predicted by model
     ys = np.array([])
     y_preds = np.array([])
@@ -196,6 +204,15 @@ def check_accuracy(model, loader, device, error_analysis=False):
                 ys = np.append(ys, np.array(y.cpu()))
                 y_preds = np.append(y_preds, np.array(preds.cpu()))
 
+            # 保存中间特征与标签
+            feature_output = model.feature.cpu()
+            # X_feature = np.append(X_feature, feature_output)
+            X_feature = np.concatenate((X_feature, feature_output), axis=0)
+
+        # 保存特征
+        print('X_shape', X_feature.shape)
+        feature_file.create_dataset('X_train', data=X_feature)
+
     sum_time = 0
     for i in times:
         sum_time = sum_time + i
@@ -209,6 +226,6 @@ def check_accuracy(model, loader, device, error_analysis=False):
 
 
 if __name__=='__main__':
-    train()
-    # test()
+    # train()
+    test()
 

@@ -52,17 +52,18 @@ class CWRUcnn(BasicModule):
         )
 
         self.fc = nn.Sequential(
-            nn.Linear(36, 16),
+            nn.Linear(36, 18),
             nn.ReLU(),
-            nn.Linear(16, 4),
+            nn.Linear(18, 10),
+            nn.ReLU(),
+            # nn.Linear(9, 4)
         )
 
     def forward(self, x):
         x = self.conv(x)
+        self.feature = x
         x = self.fc(x)
         return x
-
-
 
 
 

@@ -1,5 +1,0 @@
-﻿file_name	label
-97.mat	1
-209.mat	2
-222.mat	3
-234.mat	4

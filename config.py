@@ -17,17 +17,18 @@ class Config(object):
 
     data_root = 'data'
     mat_root = 'raw_data'  # mat数据文件根目录
-    list_filename = 'annotations_mini.txt'  # mat文件的文件列表
-    h5filename = 'DE_mini.h5'
+    list_filename = 'annotations_4.txt'  # mat文件的文件列表
+    h5filename = 'DE_3_4.h5'
+    feature_filename = 'data/DE_feature_0_10.h5'
 
-    train_data_root = 'data/DE_mini.h5'
-    val_data_root = 'data/DE_mini.h5'
-    test_data_root = 'data/DE_mini.h5'
+    train_data_root = 'data/DE_0_10.h5'
+    val_data_root = 'data/DE_0_10.h5'
+    test_data_root = 'data/DE_0_10.h5'
 
     dim = 400  # 数据的维度
     train_fraction = 0.8  # 训练集所占的占比
     split_num = 2
-    category = 4
+    category = 10  # 类别数量
 
     batch_size = 32  # batch size
     use_gpu = True  # user GPU or not
@@ -37,7 +38,7 @@ class Config(object):
 
     debug_file = '/tmp/debug'  # if os.path.exists(debug_file): enter ipdb
     result_file = './results/confuse_matrix_rate.xlsx'
-    load_model_path = './checkpoints/CWRUcnn_0710_15_31_48.pth'
+    load_model_path = './checkpoints/CWRUcnn_0325_21_00_40.pth'
 
     max_epoch = 20
     lr = 0.001  # initial learning rate

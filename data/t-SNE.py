@@ -58,9 +58,9 @@ class T_SNE(object):
 
         # ax.legend((s1, s2, s3, s4), ('0', '1', '2', '3'), loc='best')
 
-        plt.savefig('images/digits_tsne_1.png', dpi=400)
+        plt.savefig('images/DE_feature_0_10.png', dpi=400)
         plt.show()
 
 if __name__ == '__main__':
-    tsne = T_SNE(opt.h5filename)
+    tsne = T_SNE('DE_feature_0_10.h5')
     tsne.t_SNE()
